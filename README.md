@@ -7,7 +7,7 @@ Welcome to the Minesweeper game built with Flutter. This project showcases a cla
 - **Customizable Settings**: Adjust the number of rows, columns, and mines to change the game difficulty.
 - **Timer and Game Controls**: Start, pause, and reset the game with ease.
 - **Dynamic Grid**: A responsive grid that adapts based on user settings.
-- **Game Feedback**: Win or lose notifications and real-time updates.
+- **Game Feedback**: Win or lose notifications.
 
 ## Screenshots
 
