@@ -17,6 +17,7 @@ class _MainPageState extends State<MainPage> {
   int _secondsElapsed = 0;
   bool _gameStarted = false;
   bool _gamePaused = false;
+  bool _touchMode = true;
 
   @override
   void initState() {
@@ -135,18 +136,29 @@ class _MainPageState extends State<MainPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
+                      IconButton(icon:
+                        Icon(
                         Icons.flag,
                         color: AppColor.secondaryColor,
                         size: 34.0,
-                      ),
-                      Text(
-                        MineSweeperGame.minesNo.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32.0,
-                          fontWeight: FontWeight.bold,
                         ),
+                        onPressed: ()=>{
+                          setState(() {
+                             _touchMode = false;
+                          })
+                        },
+                      ),
+                      IconButton(icon: 
+                        Icon(
+                          Icons.touch_app,
+                          color: AppColor.secondaryColor,
+                          size: 34.0,
+                        ),
+                        onPressed: () =>{ 
+                          setState(() {
+                             _touchMode = true;
+                          })
+                        },
                       ),
                     ],
                   ),
@@ -206,6 +218,7 @@ class _MainPageState extends State<MainPage> {
                           setState(() {
                             game.getClickedCell(
                               cell: game.gameMap[index],
+                              touchMode: _touchMode
                             );
                             if (game.gameOver || game.gameWon) {
                               _stopTimer();
@@ -218,11 +231,11 @@ class _MainPageState extends State<MainPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Center(
-                      child: game.gameMap[index].reveal
-                          ? game.gameMap[index].content == "X"
+                      child: (game.gameMap[index].reveal ||  game.gameMap[index].markFlag)
+                          ? (game.gameMap[index].content == "X" || game.gameMap[index].markFlag)
                               ? Icon(
                                   Icons.flag,
-                                  color: Colors.red,
+                                  color:game.gameMap[index].markFlag ?  AppColor.secondaryColor:Colors.red,
                                   size: 24.0,
                                 )
                               : Text(

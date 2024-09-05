@@ -77,8 +77,16 @@ class MineSweeperGame {
   }
 
   // Function to get what action to do when we click
-  void getClickedCell({required Cell cell}) {
+  void getClickedCell({required Cell cell,required bool touchMode}) {
     if (cell.reveal || gameOver) return;
+    
+    //check for touchMode
+    if(!touchMode){
+      cell.markFlag =  !cell.markFlag;
+      return;
+    }else{
+      cell.markFlag =  false;
+    }
 
     // Check For Mine
     if (cell.content == "X") {
@@ -108,7 +116,7 @@ class MineSweeperGame {
               j <= min(cellCol + 1, col - 1);
               j++) {
             if (!map[i][j].reveal) {
-              getClickedCell(cell: map[i][j]);
+              getClickedCell(cell: map[i][j],touchMode: touchMode);
             }
           }
         }
@@ -141,11 +149,13 @@ class Cell {
   int col;
   dynamic content;
   bool reveal;
+  bool markFlag ;
 
   Cell({
     required this.row,
     required this.col,
     required this.content,
     this.reveal = false,
+    this.markFlag = false,
   });
 }
