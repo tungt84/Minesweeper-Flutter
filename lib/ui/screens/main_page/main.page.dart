@@ -294,7 +294,7 @@ class _MainPageState extends State<MainPage> {
                                   size: 24.0,
                                 )
                               : Text(
-                                  "${game.gameMap[index].content}",
+                                  "${game.gameMap[index].content==0?"":game.gameMap[index].content}"
                                   style: TextStyle(
                                     color: AppColor.letterColors[
                                         game.gameMap[index].content],
