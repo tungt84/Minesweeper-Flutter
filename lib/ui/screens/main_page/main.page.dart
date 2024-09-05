@@ -136,6 +136,32 @@ class _MainPageState extends State<MainPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      !_touchMode? 
+                      InkWell(
+                        onTap: () {
+                         setState(() {
+                            if(_gameStarted){
+                              _touchMode = false;
+                            }
+                          });
+                        },
+                        highlightColor: AppColor.secondaryColor.withOpacity(0.3),
+                        splashColor: AppColor.secondaryColor.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColor.secondaryColor, width: 2.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.flag,
+                            color: AppColor.secondaryColor,
+                            size: 34.0,),
+                          ),
+                        ),
+                      ):
                       IconButton(icon:
                         Icon(
                         Icons.flag,
@@ -144,11 +170,38 @@ class _MainPageState extends State<MainPage> {
                         ),
                         onPressed: ()=>{
                           setState(() {
-                             _touchMode = false;
+                            if(_gameStarted){
+                              _touchMode = false;
+                            }
                           })
                         },
                       ),
-                      IconButton(icon: 
+                      _touchMode ?
+                      InkWell(
+                        onTap: () {
+                         setState(() {
+                            if(_gameStarted){
+                              _touchMode = true;
+                            }
+                          });
+                        },
+                        highlightColor: AppColor.secondaryColor.withOpacity(0.3),
+                        splashColor: AppColor.secondaryColor.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColor.secondaryColor, width: 2.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.touch_app,
+                            color: AppColor.secondaryColor,
+                            size: 34.0,),
+                          ),
+                        ),
+                      ): IconButton(icon: 
                         Icon(
                           Icons.touch_app,
                           color: AppColor.secondaryColor,
@@ -156,7 +209,9 @@ class _MainPageState extends State<MainPage> {
                         ),
                         onPressed: () =>{ 
                           setState(() {
-                             _touchMode = true;
+                            if(_gameStarted){
+                              _touchMode = true;
+                            }
                           })
                         },
                       ),
