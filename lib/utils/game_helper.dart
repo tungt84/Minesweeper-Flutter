@@ -77,16 +77,16 @@ class MineSweeperGame {
   }
 
   // Function to get what action to do when we click
-  void getClickedCell({required Cell cell,required bool touchMode}) {
-    if (cell.reveal || gameOver) return;
-    
+  void getClickedCell({required Cell cell,required bool touchMode,required List<Cell> gameMapIndex}) {
     //check for touchMode
-    if(!touchMode){
+    if(!touchMode && !cell.reveal){
       cell.markFlag =  !cell.markFlag;
       return;
     }else{
       cell.markFlag =  false;
     }
+    if (gameMapIndex.contains(cell)  || gameOver) return;
+    gameMapIndex.add(cell);
 
     // Check For Mine
     if (cell.content == "X") {
@@ -95,6 +95,7 @@ class MineSweeperGame {
     } else {
       // Calculate the number to display nearby mines
       int mineCount = 0;
+      int markCount = 0;
       int cellRow = cell.row;
       int cellCol = cell.col;
 
@@ -103,9 +104,11 @@ class MineSweeperGame {
           if (map[i][j].content == "X") {
             mineCount++;
           }
+          if (map[i][j].markFlag) {
+            markCount++;
+          }
         }
       }
-
       cell.reveal = true;
       cell.content = mineCount;
 
@@ -116,7 +119,17 @@ class MineSweeperGame {
               j <= min(cellCol + 1, col - 1);
               j++) {
             if (!map[i][j].reveal) {
-              getClickedCell(cell: map[i][j],touchMode: touchMode);
+              getClickedCell(cell: map[i][j],touchMode: touchMode,gameMapIndex:gameMapIndex);
+            }
+          }
+        }
+      }else if(mineCount == markCount){
+        for (int i = max(cellRow - 1, 0); i <= min(cellRow + 1, row - 1); i++) {
+          for (int j = max(cellCol - 1, 0);
+          j <= min(cellCol + 1, col - 1);
+          j++) {
+            if (!map[i][j].markFlag) {
+              getClickedCell(cell: map[i][j],touchMode: touchMode,gameMapIndex:gameMapIndex);
             }
           }
         }
@@ -157,5 +170,6 @@ class Cell {
     required this.content,
     this.reveal = false,
     this.markFlag = false,
+
   });
 }

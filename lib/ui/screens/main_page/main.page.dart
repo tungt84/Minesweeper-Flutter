@@ -13,11 +13,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   MineSweeperGame game = MineSweeperGame();
-  Timer? _timer;
-  int _secondsElapsed = 0;
+
   bool _gameStarted = false;
   bool _gamePaused = false;
   bool _touchMode = true;
+  int _markMineCount = 0;
+
 
   @override
   void initState() {
@@ -29,52 +30,32 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _gameStarted = true;
       _gamePaused = false;
-      _secondsElapsed = 0;
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _secondsElapsed++;
-        });
-      });
     });
   }
 
   void _pauseGame() {
     setState(() {
       _gamePaused = true;
-      _stopTimer();
     });
   }
 
   void _resumeGame() {
     setState(() {
       _gamePaused = false;
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          _secondsElapsed++;
-        });
-      });
     });
   }
 
-  void _stopTimer() {
-    _timer?.cancel();
-  }
 
   void _resetGame() {
     setState(() {
       game.resetGame();
       game.gameOver = false;
-      _stopTimer();
       _gameStarted = false;
       _gamePaused = false;
     });
   }
 
-  String formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int secondsRemaining = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${secondsRemaining.toString().padLeft(2, '0')}';
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -232,12 +213,12 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Icon(
-                        Icons.timer,
+                        Icons.flag,
                         color: AppColor.secondaryColor,
                         size: 34.0,
                       ),
                       Text(
-                        formatTime(_secondsElapsed),
+                        _markMineCount.toString()+"/"+ MineSweeperGame.minesNo.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28.0,
@@ -271,12 +252,21 @@ class _MainPageState extends State<MainPage> {
                       ? null
                       : () {
                           setState(() {
+                            List<Cell> gameMapIndex = [];
                             game.getClickedCell(
                               cell: game.gameMap[index],
-                              touchMode: _touchMode
+                              touchMode: _touchMode,
+                                gameMapIndex: gameMapIndex
                             );
+                            if(!_touchMode && !game.gameMap[index].reveal){
+                              if(game.gameMap[index].markFlag){
+                                _markMineCount++;
+                              }else{
+                                _markMineCount--;
+                              }
+                            }
                             if (game.gameOver || game.gameWon) {
-                              _stopTimer();
+
                             }
                           });
                         },
@@ -323,7 +313,6 @@ class _MainPageState extends State<MainPage> {
               ? RawMaterialButton(
                   onPressed: () {
                     _resetGame();
-                    formatTime(0);
                   },
                   elevation: 0,
                   shape: const StadiumBorder(),
